@@ -3,7 +3,10 @@ import mongoose from 'mongoose'
 const topupSchema = mongoose.Schema({
 
     no_trans: String,
-    nocard: String,
+    nocard: {
+        type: String,
+        required: true
+    },
     fullname: String,
     payment_type: {
         type: String,
@@ -17,7 +20,8 @@ const topupSchema = mongoose.Schema({
     bank: String,
     ccno: Number,
     approval_code: Number,
-    user: String,
+    username_cashier: String,
+    fullname_cashier: String,
     closing: {
         type: Boolean,
         default: false

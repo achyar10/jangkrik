@@ -11,10 +11,9 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    username: {
+    fullname: {
         type: String,
         required: true,
-        unique: true
     },
     merchant_code: {
         type: String,

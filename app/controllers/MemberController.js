@@ -16,6 +16,7 @@ export const getMember = (req, res) => {
 }
 
 export const addMember = (req, res) => {
+
     const data = {
         nocard: getRandom(10),
         fullname: req.body.fullname,
