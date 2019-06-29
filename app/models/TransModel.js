@@ -8,11 +8,12 @@ const transSchema = mongoose.Schema({
         required: true
     },
     fullname: String,
-    total_amount: {
+    amount: {
         type: Number,
         default: 0
     },
-    user_cashier: String,
+    username_cashier: String,
+    fullname_cashier: String,
     closing: {
         type: Boolean,
         default: false

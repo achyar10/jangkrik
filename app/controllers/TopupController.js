@@ -1,8 +1,9 @@
 import topups from '../models/TopupModel'
+import members from '../models/MemberModel'
 
 export const getTopup = (req, res) => {
     topups.find().exec((err, topup) => {
-        if(err){
+        if (err) {
             return res.status(400).json({
                 status: false,
                 result: err
@@ -19,7 +20,7 @@ export const addTopup = (req, res) => {
     topups.find().sort({ $natural: -1 }).limit(1).exec((err, topup) => {
         var count = topup.length
         var lastNum
-        if(count < 1){
+        if (count < 1) {
             lastNum = '000001'
         } else {
             let no = topup[0].no_trans
@@ -32,10 +33,10 @@ export const addTopup = (req, res) => {
         }
         let d = new Date()
         let year = d.getFullYear()
-        let month = d.getMonth()+1
+        let month = d.getMonth() + 1
         month = (`0${month}`).slice(-2);
         const data = {
-            no_trans: lastNum + '/T/' + year+month,
+            no_trans: lastNum + '/T/' + year + month,
             nocard: req.body.nocard,
             fullname: req.body.fullname,
             payment_type: req.body.payment_type,
@@ -56,27 +57,13 @@ export const addTopup = (req, res) => {
                     'result': error
                 })
             }
-            return res.json({
-                'status': true,
-                'result': topup
+            members.findOneAndUpdate({ nocard: data.nocard }, { $inc: { saldo: data.amount }, updated_at: new Date() }, (er, member) => {
+                return res.json({
+                    'status': true,
+                    'result': topup
+                })
             })
         })
 
-    })
-}
-
-export const updateTopup = (req, res) => {
-    topups.findOneAndUpdate({ _id: req.body._id }, req.body, { new: true }, (err, topup) => {
-        if (err) {
-            return res.status(400).json({
-                'status': false,
-                'message': err
-            })
-        }
-        return res.json({
-            'status': true,
-            'message': 'Update data success',
-            topup
-        })
     })
 }
