@@ -18,8 +18,7 @@ export const getMember = (req, res) => {
 export const addMember = (req, res) => {
 
     const data = {
-        nocard: getRandom(10),
-        fullname: req.body.fullname,
+        nocard: req.body.nocard,
         saldo: req.body.saldo,
         created_at: new Date(),
         updated_at: '',
@@ -39,6 +38,29 @@ export const addMember = (req, res) => {
     })
 }
 
-function getRandom(length) {
-    return Math.floor(Math.pow(10, length - 1) + Math.random() * 9 * Math.pow(10, length - 1));
+export const cekSaldo = (req, res) => {
+    members.find({ nocard: req.body.nocard }).exec((err, member) => {
+        if(err){
+            return res.status(400).json({
+                status: false,
+                result: err
+            })
+        }
+        if(member.length < 1){
+            return res.status(200).json({
+                status: false,
+                result: 'member not found!'
+            })
+        } else {
+            const saldo = member[0].saldo
+            return res.status(200).json({
+                status: true,
+                result: saldo
+            })
+        }
+    })
 }
+
+// function getRandom(length) {
+//     return Math.floor(Math.pow(10, length - 1) + Math.random() * 9 * Math.pow(10, length - 1));
+// }

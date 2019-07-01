@@ -26,6 +26,7 @@ export const addUser = (req, res) => {
             const data = {
                 username: req.body.username,
                 password: hash,
+                fullname: req.body.fullname,
                 merchant_code: req.body.merchant_code,
                 merchant_name: req.body.merchant_name,
                 created_at: new Date(),

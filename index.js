@@ -7,8 +7,15 @@ const app = express()
 import route from './app/routes/Routes'
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header('Access-Control-Allow-Header', 'Origin, X-reqed-With, Content-Type, Accept')
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    if (req.method === "OPTIONS") {
+        res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
+        return res.status(200).json({});
+    }
     next();
 })
 // set bodyParser sebagai middleware yang akan memparsing body req

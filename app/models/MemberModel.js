@@ -4,11 +4,8 @@ const memberSchema = mongoose.Schema({
 
     nocard: {
         type: String,
+        required: true,
         unique: true,
-    },
-    fullname: {
-        type: String,
-        required: true
     },
     saldo: {
         type: Number,

@@ -38,7 +38,6 @@ export const addTopup = (req, res) => {
         const data = {
             no_trans: lastNum + '/T/' + year + month,
             nocard: req.body.nocard,
-            fullname: req.body.fullname,
             payment_type: req.body.payment_type,
             amount: req.body.amount,
             bank: req.body.bank,

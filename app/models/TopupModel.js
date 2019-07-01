@@ -7,7 +7,6 @@ const topupSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    fullname: String,
     payment_type: {
         type: String,
         enum: ['CASH', 'DEBIT/CREDIT'],

@@ -1,23 +1,22 @@
-import trans from '../models/TransModel'
+import redeems from '../models/RedeemModel'
 import members from '../models/MemberModel'
-import merchants from '../models/MerchantModel'
 
-export const getTrans = (req, res) => {
-    trans.find().exec((err, trx) => {
-        if (err) {
+export const getRedeem = (req, res) => {
+    redeems.find().exec((err, redeem) => {
+        if(err){
             return res.status(400).json({
                 status: false,
                 result: err
             })
         }
-        return res.json({
+        return res.status(200).json({
             status: true,
-            result: trx
+            result: redeem
         })
     })
 }
 
-export const addTrans = (req, res) => {
+export const addRedeem = (req, res) => {
 
     members.find({ nocard: req.body.nocard }).exec((err, member) => {
         if (err) {
@@ -32,13 +31,13 @@ export const addTrans = (req, res) => {
                 result: 'Member not found!'
             })
         } else {
-            if (member[0].saldo < req.body.amount) {
+            if (req.body.amount > member[0].saldo) {
                 return res.status(401).json({
                     status: false,
-                    result: 'Insufficient balance, please top up!'
+                    result: 'Insufficient balance'
                 })
             }
-            trans.find().sort({ $natural: -1 }).limit(1).exec((error, trx) => {
+            redeems.find().sort({ $natural: -1 }).limit(1).exec((error, trx) => {
                 var count = trx.length
                 var lastNum
                 if (count < 1) {
@@ -47,7 +46,6 @@ export const addTrans = (req, res) => {
                     let no = trx[0].no_trans
                     let pieces = no.split('/')
                     lastNum = pieces[0]
-
                     lastNum = parseInt(lastNum)
                     lastNum++;
                     lastNum = ("000000" + lastNum).substr(-6)
@@ -57,17 +55,15 @@ export const addTrans = (req, res) => {
                 let month = d.getMonth() + 1
                 month = (`0${month}`).slice(-2);
                 const data = {
-                    no_trans: lastNum + '/Trans/' + year + month,
+                    no_trans: lastNum + '/Redeem/' + year + month,
                     nocard: req.body.nocard,
                     amount: req.body.amount,
-                    store_code: req.body.store_code,
                     username_cashier: req.body.username_cashier,
                     fullname_cashier: req.body.fullname_cashier,
-                    closing: req.body.closing,
                     created_at: new Date(),
                     updated_at: '',
                 }
-                const add = new trans(data)
+                const add = new redeems(data)
                 add.save((error, trx) => {
                     if (error) {
                         return res.status(400).json({
@@ -76,11 +72,9 @@ export const addTrans = (req, res) => {
                         })
                     }
                     members.findOneAndUpdate({ nocard: data.nocard }, { $inc: { saldo: -data.amount }, updated_at: new Date() }, (er, member) => {
-                        merchants.findOneAndUpdate({ store_code: data.store_code }, { $inc: { merchant_saldo: data.amount }, updated_at: new Date() }, (e, merchant) => {
-                            return res.json({
-                                'status': true,
-                                'result': trx
-                            })
+                        return res.json({
+                            'status': true,
+                            'result': trx
                         })
                     })
                 })
