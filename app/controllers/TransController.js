@@ -32,7 +32,8 @@ export const addTrans = (req, res) => {
                 result: 'Member not found!'
             })
         } else {
-            if (member[0].saldo < req.body.amount) {
+            let balance = member[0].saldo - 10000
+            if (balance < req.body.amount) {
                 return res.status(401).json({
                     status: false,
                     result: 'Insufficient balance, please top up!'
